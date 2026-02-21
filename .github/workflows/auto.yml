@@ -1,0 +1,33 @@
+name: Auto Contribution Engine
+
+on:
+  schedule:
+    - cron: "0 */2 * * *"   # Runs every 2 hours
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Generate content
+        run: |
+          echo "## Daily System Log" > log.md
+          echo "" >> log.md
+          echo "Last updated at: $(date)" >> log.md
+          echo "" >> log.md
+          echo "System running under automation." >> log.md
+
+      - name: Commit changes
+        run: |
+          git config --global user.name "KannurAnudeepRaj"
+          git config --global user.email "KannurAnudeepRaj@gmail.com"
+          git add .
+          git commit -m "Automated update $(date)" || echo "No changes"
+          git push
